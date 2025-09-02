@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My To-Do App</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f0f0; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .task-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; }
+        .completed { text-decoration: line-through; color: #888; }
+        .task-actions { display: flex; gap: 5px; }
+        .btn { padding: 5px 10px; border-radius: 4px; cursor: pointer; border: none; }
+        .btn-complete { background-color: #4CAF50; color: white; }
+        .btn-delete { background-color: #f44336; color: white; }
+        .form-container { display: flex; gap: 5px; margin-top: 20px; }
+        .form-input { flex-grow: 1; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        .form-btn { padding: 8px 12px; border-radius: 4px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        
+        <div th:if="${tasks.isEmpty()}">
+            <p>No tasks yet!</p>
+        </div>
+        <div th:each="task : ${tasks}" class="task-item">
+            <span th:text="${task.description}" th:classappend="${task.completed ? 'completed' : ''}"></span>
+            <div class="task-actions">
+                <form th:action="@{/tasks/{id}/complete(id=${task.id})}" method="post" th:if="${!task.completed}">
+                    <button type="submit" class="btn btn-complete">Complete</button>
+                </form>
+                <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post">
+                    <button type="submit" class="btn btn-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+
+        <form th:action="@{/tasks}" th:object="${newTask}" method="post" class="form-container">
+            <input type="text" th:field="*{description}" class="form-input" placeholder="New task..." required />
+            <button type="submit" class="form-btn">Add Task</button>
+        </form>
+    </div>
+</body>
+</html>
+
